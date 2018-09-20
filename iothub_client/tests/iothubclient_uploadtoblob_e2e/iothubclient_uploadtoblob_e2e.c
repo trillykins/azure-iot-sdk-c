@@ -204,7 +204,7 @@ void e2e_uploadtoblob_test(IOTHUB_CLIENT_TRANSPORT_PROVIDER protocol, IOTHUB_ACC
         deviceToUse = IoTHubAccount_GetSASDevice(g_iothubAcctInfo);
     }
     ASSERT_IS_NOT_NULL(deviceToUse);
-    
+
     IOTHUB_CLIENT_HANDLE iotHubClientHandle = IoTHubClient_CreateFromConnectionString(deviceToUse->connectionString, protocol);
     ASSERT_IS_NOT_NULL_WITH_MSG(iotHubClientHandle, "Could not invoke IoTHubClient_CreateFromConnectionString");
 
@@ -221,14 +221,14 @@ void e2e_uploadtoblob_test(IOTHUB_CLIENT_TRANSPORT_PROVIDER protocol, IOTHUB_ACC
     result = IoTHubClient_SetOption(iotHubClientHandle, OPTION_CURL_VERBOSE, &curl_verbose);
     ASSERT_ARE_EQUAL_WITH_MSG(IOTHUB_CLIENT_RESULT, IOTHUB_CLIENT_OK, result, "Could not set curl_verbose opt");
 #endif
-
+	
     UPLOADTOBLOB_CALLBACK_STATUS uploadToBlobStatus = UPLOADTOBLOB_CALLBACK_PENDING;
     result = IoTHubClient_UploadToBlobAsync(iotHubClientHandle, UPLOADTOBLOB_E2E_TEST_DESTINATION_FILE, UPLOADTOBLOB_E2E_TEST_DATA, strlen((const char*)UPLOADTOBLOB_E2E_TEST_DATA), uploadToBlobCallback, &uploadToBlobStatus);
     ASSERT_ARE_EQUAL_WITH_MSG(IOTHUB_CLIENT_RESULT, IOTHUB_CLIENT_OK, result, "Could not IoTHubClient_UploadToBlobAsync");
 
     poll_for_upload_completion(&uploadToBlobStatus);
     check_upload_result(uploadToBlobStatus);
-
+	ThreadAPI_Sleep(3000);
     IoTHubClient_Destroy(iotHubClientHandle);
 }
 
@@ -299,7 +299,7 @@ IOTHUB_CLIENT_FILE_UPLOAD_GET_DATA_RESULT uploadToBlobGetDataEx(IOTHUB_CLIENT_FI
         callbackResult = IOTHUB_CLIENT_FILE_UPLOAD_GET_DATA_OK;
     }
     uploadBlobNumber++;
-    
+
     (void)Unlock(updateBlobTestLock);
     return callbackResult;
 }
@@ -315,7 +315,7 @@ void e2e_uploadtoblob_multiblock_test(IOTHUB_CLIENT_TRANSPORT_PROVIDER protocol,
     IOTHUB_CLIENT_RESULT result;
     IOTHUB_PROVISIONED_DEVICE* deviceToUse = IoTHubAccount_GetSASDevice(g_iothubAcctInfo);
     ASSERT_IS_NOT_NULL(deviceToUse);
-    
+
     IOTHUB_CLIENT_HANDLE iotHubClientHandle = IoTHubClient_CreateFromConnectionString(deviceToUse->connectionString, protocol);
     ASSERT_IS_NOT_NULL_WITH_MSG(iotHubClientHandle, "Could not invoke IoTHubClient_CreateFromConnectionString");
 
@@ -343,7 +343,7 @@ void e2e_uploadtoblob_test_multiple_simultaneous_uploads(IOTHUB_CLIENT_TRANSPORT
     IOTHUB_CLIENT_RESULT result;
     IOTHUB_PROVISIONED_DEVICE* deviceToUse = IoTHubAccount_GetSASDevice(g_iothubAcctInfo);
     ASSERT_IS_NOT_NULL(deviceToUse);
-    
+
     IOTHUB_CLIENT_HANDLE iotHubClientHandle = IoTHubClient_CreateFromConnectionString(deviceToUse->connectionString, protocol);
     ASSERT_IS_NOT_NULL_WITH_MSG(iotHubClientHandle, "Could not invoke IoTHubClient_CreateFromConnectionString");
 
@@ -438,14 +438,14 @@ TEST_FUNCTION(IoTHub_MQTT_WS_UploadToBlob_x509)
 #ifdef TEST_AMQP
 TEST_FUNCTION(IoTHub_AMQP_UploadToBlob_sas)
 {
-    // Currently not working
-    // e2e_uploadtoblob_test(AMQP_Protocol, IOTHUB_ACCOUNT_AUTH_CONNSTRING);
+     // Currently not working
+     e2e_uploadtoblob_test(AMQP_Protocol, IOTHUB_ACCOUNT_AUTH_CONNSTRING);
 }
 
 TEST_FUNCTION(IoTHub_AMQP_WS_UploadToBlob_sas)
 {
-    // Currently not working
-    // e2e_uploadtoblob_test(AMQP_Protocol_over_WebSocketsTls, IOTHUB_ACCOUNT_AUTH_CONNSTRING);
+     // Currently not working
+     e2e_uploadtoblob_test(AMQP_Protocol_over_WebSocketsTls, IOTHUB_ACCOUNT_AUTH_CONNSTRING);
 }
 
 #ifndef __APPLE__
